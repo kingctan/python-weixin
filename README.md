@@ -29,7 +29,7 @@ See the docs for more information: https://open.weixin.qq.com/cgi-bin/showdocume
 
 Once you have an access token (whether via the script or from the user flow), you can  pass that token into the WeixinAPI constructor:
 
-`` python
+``` python
 from weixin.client import WeixinAPI
 
 access_token = "YOUR_ACCESS_TOKEN"
