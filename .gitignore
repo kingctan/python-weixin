@@ -1,0 +1,26 @@
+# python
+*.py[cod]
+
+# buildout
+.gitconfig
+.installed.cfg
+bin/
+parts/
+eggs/
+develop-eggs/
+instub.egg-info/
+
+# editor
+*.sw[po]
+*.html~
+.idea/
+.DS_Store
+
+# tags
+tags
+
+# gulp
+public/node_modules
+
+# app
+instub/config_local.py
