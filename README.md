@@ -1,9 +1,9 @@
 # python-weixin
-======
+-----
 A Python client for the Weixin REST APIs
 
 # Installation
-
+-----
 TODO
 
 # Requires
@@ -21,18 +21,24 @@ See the docs for more information: https://open.weixin.qq.com/cgi-bin/showdocume
 
 
 ### Authenticating a user
-
+-----
 (TODO)The provided sample app shows a simple OAuth flow for authenticating a user and getting an access token for them.
 
 
 ### Using an access token
-
+-----
 Once you have an access token (whether via the script or from the user flow), you can  pass that token into the WeixinAPI constructor:
 
 ``` python
 from weixin.client import WeixinAPI
 
-access_token = "YOUR_ACCESS_TOKEN"
+scope = ("snsapi_login", )
+authorize_url = api.get_authorize_url(scope=scope)
+
+code = 'code'
+
+access_token = api.exchange_code_for_access_token(code=code)
+
 api = WeixinAPI(access_token=access_token)
 ```
 
