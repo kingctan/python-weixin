@@ -30,6 +30,9 @@ Once you have an access token (whether via the script or from the user flow), yo
 from weixin.client import WeixinAPI
 
 scope = ("snsapi_login", )
+api = WeixinAPI(appid=APP_ID,
+                app_secret=APP_SECRET,
+                redirect_uri=REDIRECT_URI)
 authorize_url = api.get_authorize_url(scope=scope)
 
 code = 'code'
