@@ -41,11 +41,10 @@ class OAuth2API(object):
     # override with 'Instagram', etc
     api_name = "Generic API"
 
-    def __init__(self, appid=None, app_secret=None, client_ips=None,
+    def __init__(self, appid=None, app_secret=None,
                  access_token=None, redirect_uri=None):
         self.appid = appid
         self.app_secret = app_secret
-        self.client_ips = client_ips
         self.access_token = access_token
         self.redirect_uri = redirect_uri
 
@@ -119,3 +118,78 @@ class OAuth2AuthExchangeRequest(object):
                 parsed_content.get("errcode", ""),
                 parsed_content.get("errmsg", ""))
         return parsed_content
+
+
+class OAuth2Request(object):
+
+    def __init__(self, api):
+        self.api = api
+
+    def url_for_get(self, path, parameters):
+        return self._full_url_with_params(path, parameters)
+
+    def get_request(self, path, **kwargs):
+        return self.make_request(self.prepare_request("GET", path, kwargs))
+
+    def post_request(self, path, **kwargs):
+        return self.make_request(self.prepare_request("POST", path, kwargs))
+
+    def _full_url(self, path, include_secret=False):
+        return '%s://%s%s%s%s' % (self.api.protocol,
+                                  self.api.host,
+                                  self.api.base_path,
+                                  path,
+                                  self._auth_query(include_secret))
+
+    def _full_url_with_params(self, path, params, include_secret=False):
+        return (self._full_url(path, include_secret) +
+                self._full_url_with_params(params))
+
+    def _full_query_with_params(self, params):
+        params = ("&" + urlencode(params)) if params else ""
+        return params
+
+    def _auth_query(self, include_secret=False):
+        if self.api.access_token:
+            return ("?%s=%s" % (self.api.access_token_field,
+                                self.api.access_token))
+
+    def _post_body(self, params):
+        return urlencode(params)
+
+    def _encode_multipart(params, files):
+        pass
+
+    def perpare_and_make_request(self, method, path,
+                                 params, include_secret=False):
+        url, method, body, headers = self.perpare_request(method, path, params,
+                                                          include_secret)
+        return self.make_request(url, method, body, headers)
+
+    def prepare_request(self, method, path, params, include_secret=False):
+        url = body = None
+        headers = {}
+
+        if not params.get('files'):
+            if method == 'POST':
+                body = self._post_body(params)
+                headers = {'Content-type': 'application/x-www-form-urlencoded'}
+                url = self._full_url(path, include_secret)
+            else:
+                url = self._full_url_with_params(path, params, include_secret)
+        else:
+            body, headers = self._encode_multipart(params, params['files'])
+            url = self._full_url(path)
+
+        return url, method, body, headers
+
+    def make_request(self, url, method="GET", body=None, headers=None):
+        headers = headers or {}
+
+        if 'User-Agent' not in headers:
+            headers.update({"User-Agent":
+                            "%s Python Client" % self.api.api_name})
+        if method == 'GET':
+            return requests.get(url, headers=headers)
+        elif method == 'POST':
+            return requests.post(url, data=body, headers=headers)

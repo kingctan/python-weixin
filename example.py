@@ -4,6 +4,10 @@
 from weixin.client import WeixinAPI
 from weixin.oauth2 import OAuth2AuthExchangeError
 
+# APP_ID = 'wxbdc5610cc59c1631'
+# APP_SECRET = 'your app secret'
+# REDIRECT_URI = 'https://passport.yhd.com/wechat/callback.do'
+
 APP_ID = 'wxbdc5610cc59c1631'
 APP_SECRET = 'your app secret'
 REDIRECT_URI = 'https://passport.yhd.com/wechat/callback.do'

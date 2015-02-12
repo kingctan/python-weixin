@@ -37,3 +37,7 @@ class WeixinAPI(oauth2.OAuth2API):
         else:
             raise Exception("Unsupported format")
         super(WeixinAPI, self).__init__(*args, **kwargs)
+
+    user = bind_method(path="/sns/userinfo",
+                       accepts_parameters=["openid"],
+                       response_type="entry")
