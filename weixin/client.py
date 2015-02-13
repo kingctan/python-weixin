@@ -13,6 +13,7 @@ Description: Weixin OAuth2
 
 
 from . import oauth2
+from .bind import bind_method
 
 
 SUPPORTED_FORMATS = ['json']

@@ -94,10 +94,10 @@ def bind_method(**config):
                     raise WeixinClientError("Parameter %s already supplied" % key)
                 self.parameters[key] = encode_string(value)
 
-            if 'open_id' in self.accepts_parameters and \
-                    'open_id' not in self.parameters and \
+            if 'openid' in self.accepts_parameters and \
+                    'openid' not in self.parameters and \
                     not self.requires_target_user:
-                self.parameters['open_id'] = 'self'
+                self.parameters['openid'] = 'self'
 
         def _build_path(self):
             for variable in re_path_template.findall(self.path):

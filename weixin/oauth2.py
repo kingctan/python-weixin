@@ -124,6 +124,7 @@ class OAuth2Request(object):
 
     def __init__(self, api):
         self.api = api
+        self.host = 'api.weixin.qq.com/sns/userinfo'
 
     def url_for_get(self, path, parameters):
         return self._full_url_with_params(path, parameters)
@@ -136,14 +137,14 @@ class OAuth2Request(object):
 
     def _full_url(self, path, include_secret=False):
         return '%s://%s%s%s%s' % (self.api.protocol,
-                                  self.api.host,
+                                  self.host,
                                   self.api.base_path,
                                   path,
                                   self._auth_query(include_secret))
 
     def _full_url_with_params(self, path, params, include_secret=False):
         return (self._full_url(path, include_secret) +
-                self._full_url_with_params(params))
+                self._full_query_with_params(params))
 
     def _full_query_with_params(self, params):
         params = ("&" + urlencode(params)) if params else ""
