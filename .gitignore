@@ -10,6 +10,7 @@
 bin/
 parts/
 eggs/
+build/
 
 # test
 test_example.py
