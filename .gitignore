@@ -16,6 +16,9 @@ instub.egg-info/
 .idea/
 .DS_Store
 
+# test
+test_example.py
+
 # tags
 tags
 

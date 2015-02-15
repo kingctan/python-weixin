@@ -34,6 +34,7 @@ class OAuth2API(object):
     base_path = None
     authorize_url = None
     access_token_url = None
+    refresh_token_url = None
     redirect_uri = None
     # some providers use "oauth_token"
     access_token_field = "access_token"
@@ -61,6 +62,10 @@ class OAuth2API(object):
         req = OAuth2AuthExchangeRequest(self)
         return req.exchange_for_access_token(code=code)
 
+    def exchange_refresh_token_for_access_token(self, refresh_token):
+        req = OAuth2AuthExchangeRequest(self)
+        return req.exchange_for_access_token(refresh_token=refresh_token)
+
 
 class OAuth2AuthExchangeRequest(object):
     def __init__(self, api):
@@ -77,19 +82,25 @@ class OAuth2AuthExchangeRequest(object):
         url_params = urlencode(client_params)
         return "%s?%s" % (self.api.authorize_url, url_params)
 
-    def _data_for_exchange(self, code=None, scope=None):
+    def _data_for_exchange(self, code=None, refresh_token=None, scope=None):
         app_params = {
             "appid": self.api.appid,
-            "secret": self.api.app_secret,
-            "redirect_uri": self.api.redirect_uri,
-            "grant_type": "authorization_code"
         }
         if code:
-            app_params.update(code=code)
-            if scope:
-                app_params.update(scope=' '.join(scope))
+            app_params.update(code=code,
+                              secret=self.api.app_secret,
+                              redirect_uri=self.api.redirect_uri,
+                              grant_type="authorization_code")
+        elif refresh_token:
+            app_params.update(refresh_token=refresh_token,
+                              grant_type="refresh_token")
+        if scope:
+            app_params.update(scope=' '.join(scope))
         url_params = urlencode(app_params)
-        return "%s?%s" % (self.api.access_token_url, url_params)
+        if code:
+            return "%s?%s" % (self.api.access_token_url, url_params)
+        elif refresh_token:
+            return "%s?%s" % (self.api.refresh_token_url, url_params)
 
     def get_authorize_url(self, scope=None):
         return self._url_for_authorize(scope=scope)
@@ -105,17 +116,19 @@ class OAuth2AuthExchangeRequest(object):
             error_data = error_parser(response.content, encoding)
             if error_data:
                 raise OAuth2AuthExchangeError(
-                    error_data.get("errcode", ""),
+                    error_data.get("errcode", 0),
                     error_data.get("errmsg", ""))
         return url
 
-    def exchange_for_access_token(self, code=None, scope=None):
-        access_token_url = self._data_for_exchange(code, scope=scope)
+    def exchange_for_access_token(self, code=None,
+                                  refresh_token=None, scope=None):
+        access_token_url = self._data_for_exchange(code,
+                                                   refresh_token, scope=scope)
         response = requests.get(access_token_url)
         parsed_content = simplejson.loads(response.content.decode())
-        if parsed_content.get('errcode', None):
+        if parsed_content.get('errcode', 0):
             raise OAuth2AuthExchangeError(
-                parsed_content.get("errcode", ""),
+                parsed_content.get("errcode", 0),
                 parsed_content.get("errmsg", ""))
         return parsed_content
 
@@ -124,7 +137,7 @@ class OAuth2Request(object):
 
     def __init__(self, api):
         self.api = api
-        self.host = 'api.weixin.qq.com/sns/userinfo'
+        self.host = 'api.weixin.qq.com'
 
     def url_for_get(self, path, parameters):
         return self._full_url_with_params(path, parameters)

@@ -116,7 +116,7 @@ def bind_method(**config):
             else:
                 self.path = self.path
 
-        def _build_pagination_info(self):
+        def _build_pagination_info(self, content_obj):
             pass
 
         def _do_api_request(self, url, method='GET', body=None, headers=None):
