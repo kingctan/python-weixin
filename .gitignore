@@ -1,29 +1,16 @@
 # python
 *.py[cod]
+*.swp
 
-# buildout
+.DS_Store
+
+# build
 .gitconfig
 .installed.cfg
 bin/
 parts/
 eggs/
-develop-eggs/
-instub.egg-info/
-
-# editor
-*.sw[po]
-*.html~
-.idea/
-.DS_Store
 
 # test
 test_example.py
-
-# tags
-tags
-
-# gulp
-public/node_modules
-
-# app
-instub/config_local.py
+test_settings.py

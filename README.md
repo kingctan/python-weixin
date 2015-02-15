@@ -4,7 +4,7 @@ A Python client for the Weixin REST APIs
 
 Installation
 -----
-TODO
+pip install -e https://github.com/zongxiao/python-weixin
 
 Requires
 -----
@@ -35,10 +35,10 @@ api = WeixinAPI(appid=APP_ID,
                 redirect_uri=REDIRECT_URI)
 authorize_url = api.get_authorize_url(scope=scope)
 
-code = 'code'
-
 access_token = api.exchange_code_for_access_token(code=code)
 
 api = WeixinAPI(access_token=access_token)
+
+user = api.user(openid="openid")
 ```
 
