@@ -3,7 +3,7 @@
 __title__ = 'requests'
 __version__ = '0.0.1'
 __author__ = 'Zongxiao Cheng'
-__license__ = 'GUN GPL v2.0'
+__license__ = 'BSD'
 
 
 from .bind import WeixinClientError, WeixinAPIError
