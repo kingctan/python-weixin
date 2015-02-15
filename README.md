@@ -4,7 +4,7 @@ A Python client for the Weixin REST APIs
 
 Installation
 -----
-pip install -e https://github.com/zongxiao/python-weixin
+python setup.py install
 
 Requires
 -----
